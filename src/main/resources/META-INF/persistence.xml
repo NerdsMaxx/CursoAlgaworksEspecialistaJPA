@@ -6,18 +6,45 @@
     <persistence-unit name="Ecommerce-PU">
         <properties>
             <property name="jakarta.persistence.jdbc.url"
-                      value="jdbc:mysql://localhost:3333/algaworks_ecommerce?createDatabaseIfNotExist=true&amp;useTimezone=true&amp;serverTimezone=UTC" />
-            <property name="jakarta.persistence.jdbc.user" value="root" />
-            <property name="jakarta.persistence.jdbc.password" value="root" />
-            <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver" />
+                      value="jdbc:mysql://localhost:3306/algaworks_ecommerce?createDatabaseIfNotExist=true&amp;useTimezone=true&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true"/>
+            <property name="jakarta.persistence.jdbc.user" value="root"/>
+            <property name="jakarta.persistence.jdbc.password" value="root"/>
+            <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
+
 
             <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
-            <property name="jakarta.persistence.sql-load-script-source" value="META-INF/bd/dados-iniciais.sql"/>
+            <!--    outros possiveis valores: none (fazer nada), drop (vai só remover), create (vai só criar), drop-and-create (vai remover e criar depois) -->
+            <!-- none e drop não executa sql inicial "dados-iniciais.sql"-->
 
-            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect" />
+<!--            <property name="jakarta.persistence.schema-generation.create-source"-->
+<!--                      value="metadata-then-script"/>-->
+<!--            <property name="jakarta.persistence.schema-generation.drop-source"-->
+<!--                      value="metadata-then-script"/>-->
+            <!-- outros possíveis valores: metadata, script, metadata-then-script, script-then-metadata -->
+            <!-- metadata: anotações na entidade -->
+            <!-- script: arquivos SQLs -->
+            <!-- As duas propriedades acima (schema-generation.create-source, schema-generation.drop-source) podem ter valores diferentes -->
+            <!-- Só tem que tomar cuidado para não conflitar com schema-generation.create-script-source e schema-generation.drop-script-source, pode dar ruim,
+                 já que ambos vão criar as mesmas tabelas ou destruir as mesmas tabelas. Mas depende do que está no script. -->
 
-            <property name="hibernate.show_sql" value="true" />
-            <property name="hibernate.format_sql" value="true" />
+<!--            <property name="jakarta.persistence.schema-generation.create-script-source"-->
+<!--                      value="META-INF/bd/script-criacao.sql"/>-->
+<!--            <property name="jakarta.persistence.schema-generation.drop-script-source"-->
+<!--                      value="META-INF/bd/script-remocao.sql"/>-->
+            <property name="jakarta.persistence.sql-load-script-source"
+                      value="META-INF/bd/dados-iniciais.sql"/>
+
+<!--            <property name="jakarta.persistence.schema-generation.scripts.action"-->
+<!--                      value="none"/>-->
+<!--            <property name="jakarta.persistence.schema-generation.scripts.create-target"-->
+<!--                      value="C:/Users/henri/Documents/GitHub/Spring Java/Algaworks/algaworks-ecommerce/export/script-criacao.sql"/>-->
+<!--            <property name="jakarta.persistence.schema-generation.scripts.drop-target"-->
+<!--                      value="C:/Users/henri/Documents/GitHub/Spring Java/Algaworks/algaworks-ecommerce/export/script-remocao.sql"/>-->
+
+            <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
+
+            <property name="hibernate.show_sql" value="true"/>
+            <property name="hibernate.format_sql" value="true"/>
         </properties>
     </persistence-unit>
 </persistence>

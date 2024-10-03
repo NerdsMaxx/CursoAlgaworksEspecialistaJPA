@@ -2,6 +2,7 @@ package com.algaworks.ecommerce.iniciandocomjpa;
 
 import com.algaworks.ecommerce.EntityManagerTest;
 import com.algaworks.ecommerce.model.Cliente;
+import com.algaworks.ecommerce.model.SexoCliente;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,6 +17,8 @@ public class PrimeiroCrudTest extends EntityManagerTest {
 //        Se usar @GeneratedValue(strategy = GenerationType.IDENTITY),
 //        não precisa setar o Id.
         cliente.setNome("Márcio Antusa");
+        cliente.setCpf("333.333.333-33");
+        cliente.setSexo(SexoCliente.MASCULINO);
         
         entityManager.getTransaction().begin();
         entityManager.persist(cliente);
@@ -23,7 +26,7 @@ public class PrimeiroCrudTest extends EntityManagerTest {
         
         entityManager.clear();
         
-        Cliente clienteVerificado = entityManager.find(Cliente.class, 3);
+        Cliente clienteVerificado = entityManager.find(Cliente.class, cliente.getId());
         assertNotNull(clienteVerificado);
     }
     

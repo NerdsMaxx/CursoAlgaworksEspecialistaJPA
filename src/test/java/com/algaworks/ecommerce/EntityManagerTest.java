@@ -17,11 +17,13 @@ public abstract class EntityManagerTest {
     public static void beforeAll() {
         entityManagerFactory = Persistence
                 .createEntityManagerFactory("Ecommerce-PU");
+        System.out.println("olá");
     }
     
     @AfterAll
     public static void afterAll() {
         entityManagerFactory.close();
+        System.out.println("olá");
     }
     
     @BeforeEach

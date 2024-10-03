@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -19,6 +21,8 @@ public class OperacoesComTransacaoTest extends EntityManagerTest {
         novoProduto.setNome("Câmera Canon");
         novoProduto.setDescricao("A melhor definição para suas fotos.");
         novoProduto.setPreco(BigDecimal.valueOf(5000));
+        novoProduto.setDataCriacao(LocalDateTime.now());
+        novoProduto.setTags(List.of("Foto"));
         
         entityManager.getTransaction().begin();
         entityManager.persist(novoProduto);
@@ -39,6 +43,8 @@ public class OperacoesComTransacaoTest extends EntityManagerTest {
         novoProduto.setNome("Câmera Canon 2");
         novoProduto.setDescricao("A melhor definição para suas fotos. 2");
         novoProduto.setPreco(BigDecimal.valueOf(1005));
+        novoProduto.setDataCriacao(LocalDateTime.now());
+        novoProduto.setTags(List.of("Fotos"));
         
         entityManager.getTransaction().begin();
         novoProduto = entityManager.merge(novoProduto);
@@ -60,6 +66,8 @@ public class OperacoesComTransacaoTest extends EntityManagerTest {
         produtoPersist.setNome("Smartphone One Plus");
         produtoPersist.setDescricao("O processador mais rápido.");
         produtoPersist.setPreco(new BigDecimal(2000));
+        produtoPersist.setDataCriacao(LocalDateTime.now());
+        produtoPersist.setTags(List.of("Fotos"));
         
         entityManager.getTransaction().begin();
         entityManager.persist(produtoPersist);  //MANTÉM O MESMO OBJETO INSTANCIADO GERENCIADO
@@ -99,6 +107,8 @@ public class OperacoesComTransacaoTest extends EntityManagerTest {
         produto.setNome("Kindle Paperwhite");
         produto.setDescricao("Conheça o novo Kindle.");
         produto.setPreco(new BigDecimal("5999"));
+        produto.setDataCriacao(LocalDateTime.now());
+        produto.setTags(List.of("Fotos"));
         
         entityManager.getTransaction().begin();
         produto = entityManager.merge(produto);

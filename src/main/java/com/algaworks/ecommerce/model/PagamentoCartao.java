@@ -3,22 +3,31 @@ package com.algaworks.ecommerce.model;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-@EqualsAndHashCode(of = {"id"})
+@Getter
+@Setter
+//@EqualsAndHashCode(of = {"id"})
+@DiscriminatorValue("cartao")
 @Entity
-@Table(name = "pagamento_cartao")
-public class PagamentoCartao {
+//@Table(name = "pagamento_cartao")
+public class PagamentoCartao extends Pagamento {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    private Integer id;
     
-    private String numero;
+    @Column(name = "numero_cartao", length = 50, nullable = false)
+    private String numeroCartao;
     
-    @Enumerated(EnumType.STRING)
-    private StatusPagamento status;
+//    @Enumerated(EnumType.STRING)
+//    private StatusPagamento status;
     
-    @Column(name = "pedido_id")
-    private Integer pedidoId;
+//    @Column(name = "pedido_id")
+//    private Integer pedidoId;
+    
+//    @OneToOne(optional = false)
+//    @JoinColumn(name = "pedido_id")
+//    private Pedido pedido;
 }

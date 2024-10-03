@@ -16,6 +16,7 @@ public class MapeandoEnumeracoesTest extends EntityManagerTest {
 //        cliente.setId(4);
         cliente.setNome("José Maria");
         cliente.setSexo(SexoCliente.MASCULINO);
+        cliente.setCpf("444.444.444-44");
         
         entityManager.getTransaction().begin();
         entityManager.persist(cliente);
@@ -23,7 +24,7 @@ public class MapeandoEnumeracoesTest extends EntityManagerTest {
         
         entityManager.clear();
         
-        Cliente clienteVerificacao = entityManager.find(Cliente.class, 4);
+        Cliente clienteVerificacao = entityManager.find(Cliente.class, cliente.getId());
         assertNotNull(clienteVerificacao);
     }
 }
