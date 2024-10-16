@@ -63,4 +63,9 @@ public class ItemPedido {
 //
 //    @Column(name = "produto_id")
 //    private Integer produtoId;
+    
+    @PostLoad
+    public void aoCarregar() {
+        System.out.println("Após carregar o item pedido!");
+    }
 }

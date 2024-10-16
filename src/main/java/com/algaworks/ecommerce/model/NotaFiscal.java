@@ -29,6 +29,7 @@ public class NotaFiscal extends EntidadeBase {
     @Column(length = 1000, nullable = false)
     private byte[] xml;
     
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "data_emissao", columnDefinition = "datetime(6) not null")
     private Date dataEmissao;
     
@@ -43,4 +44,9 @@ public class NotaFiscal extends EntidadeBase {
 //               joinColumns = @JoinColumn(name = "nota_fiscal_id", unique = true),
 //               inverseJoinColumns = @JoinColumn(name = "pedido_id", unique = true))
     private Pedido pedido;
+    
+    @PostLoad
+    public void aoCarregar() {
+        System.out.println("Após carregar a nota fiscal!");
+    }
 }

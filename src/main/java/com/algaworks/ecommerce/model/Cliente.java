@@ -20,18 +20,22 @@ import java.util.Optional;
 @Table(name = "cliente", uniqueConstraints = {
         @UniqueConstraint(name = "unq_cliente_cpf", columnNames = "cpf")},
        indexes = {@Index(name = "idx_cliente_nome", columnList = "nome")})//nome da coluna do BD, não atributo. Poderia ser index para cpf, mas prof usou para nome
+@ToString(onlyExplicitlyIncluded = true)
 public class Cliente extends EntidadeBase {
     
 //    @Id
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    private Integer id;
     
+    @ToString.Include
     @Column(length = 100, nullable = false)
     private String nome;
     
+    @ToString.Include
     @Column(length = 14, nullable = false)
     private String cpf;
     
+    @ToString.Include
     @ElementCollection
     @CollectionTable(
             name = "cliente_contato",
@@ -41,17 +45,19 @@ public class Cliente extends EntidadeBase {
     @Column(name = "descricao")
     private Map<String,String> contatos;
     
+    @ToString.Include
     @Transient
     private String primeiroNome;
     
+    @ToString.Include
     @Column(table = "cliente_detalhe", length = 30, nullable = false)
     @Enumerated(EnumType.STRING)
     private SexoCliente sexo;
     
+    @ToString.Include
     @Column(name = "data_nascimento", table = "cliente_detalhe")
     private LocalDate dataNascimento;
     
-    @ToString.Exclude
     @OneToMany(mappedBy = "cliente")
     private List<Pedido> pedidos;
     
