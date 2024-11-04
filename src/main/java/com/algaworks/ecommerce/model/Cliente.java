@@ -11,7 +11,6 @@ import java.util.Optional;
 
 @Getter
 @Setter
-//@EqualsAndHashCode(of = {"id"})
 @Entity
 @SecondaryTable(name = "cliente_detalhe",
                 pkJoinColumns = @PrimaryKeyJoinColumn(name = "cliente_id"),
@@ -21,6 +20,7 @@ import java.util.Optional;
         @UniqueConstraint(name = "unq_cliente_cpf", columnNames = "cpf")},
        indexes = {@Index(name = "idx_cliente_nome", columnList = "nome")})//nome da coluna do BD, não atributo. Poderia ser index para cpf, mas prof usou para nome
 @ToString(onlyExplicitlyIncluded = true)
+@NoArgsConstructor
 public class Cliente extends EntidadeBase {
     
 //    @Id
@@ -74,5 +74,9 @@ public class Cliente extends EntidadeBase {
                                .filter(str -> ! str.isBlank() && str.contains(" "))
                                .map(str -> nome.substring(0, str.indexOf(" ")))
                                .orElse(null);
+    }
+    
+    public Cliente(Integer id) {
+        this.setId(id);
     }
 }

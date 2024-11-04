@@ -8,6 +8,8 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 
+import java.util.TimeZone;
+
 public abstract class EntityManagerTest {
     
     protected static EntityManagerFactory entityManagerFactory;
@@ -15,6 +17,7 @@ public abstract class EntityManagerTest {
     
     @BeforeAll
     public static void beforeAll() {
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
         entityManagerFactory = Persistence
                 .createEntityManagerFactory("Ecommerce-PU");
         System.out.println("olá");

@@ -9,8 +9,10 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
 
+import static java.util.stream.Collectors.joining;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ExpressoesCondicionaisTest extends EntityManagerTest {
@@ -208,5 +210,107 @@ public class ExpressoesCondicionaisTest extends EntityManagerTest {
         
         List<Produto> produtos = typedQuery.getResultList();
         assertFalse(produtos.isEmpty());
+    }
+    
+    @Test
+    public void usarExpressaoCase() {
+        String jpql = "select p.id, " +
+                      "case p.status " +
+                      "when 'PAGO' then 'Está pago' " +
+                      "when 'CANCELADO' then 'Foi cancelado' " +
+                      "else 'Está aguardando' " +
+                      "end " +
+                      "from Pedido p";
+        
+        TypedQuery<Object[]> typedQuery = entityManager.createQuery(jpql, Object[].class);
+        
+        List<Object[]> resultado = typedQuery.getResultList();
+        assertFalse(resultado.isEmpty());
+        
+        resultado.stream().map(r -> Arrays.stream(r).map(Object::toString)
+                                          .collect(joining(" - ")))
+                 .forEach(System.out::println);
+        
+        
+        
+        jpql = "select p.id, " +
+                      "case type(p.pagamento) " +
+                      "when PagamentoBoleto then 'Pago com boleto' " +
+                      "when PagamentoCartao then 'Pago com cartão' " +
+                      "else 'Não definido' " +
+                      "end " +
+                      "from Pedido p";
+        
+        typedQuery = entityManager.createQuery(jpql, Object[].class);
+        
+        resultado = typedQuery.getResultList();
+        assertFalse(resultado.isEmpty());
+        
+        resultado.stream().map(r -> Arrays.stream(r).map(Object::toString)
+                                          .collect(joining(" - ")))
+                 .forEach(System.out::println);
+    }
+    
+    @Test
+    public void usarExpressaoIN() {
+        String jpql = "select p from Pedido p " +
+                      "where p.id in (1, 3, 4)";
+        
+        TypedQuery<Pedido> typedQuery = entityManager.createQuery(jpql, Pedido.class);
+        
+        List<Pedido> resultado = typedQuery.getResultList();
+        assertFalse(resultado.isEmpty());
+        
+        resultado.forEach(p -> System.out.println(p.getId()));
+        
+        
+        
+        jpql = "select p from Pedido p " +
+                      "where p.id in :lista";
+        
+        List<Integer> parametros = List.of(1, 3, 4);
+        
+        typedQuery = entityManager.createQuery(jpql, Pedido.class);
+        typedQuery.setParameter("lista", parametros);
+        
+        resultado = typedQuery.getResultList();
+        assertFalse(resultado.isEmpty());
+        
+        resultado.forEach(p -> System.out.println(p.getId()));
+        
+        
+        
+        jpql = "select p from Pedido p " +
+               "where p.cliente in :clientes";
+        
+        //List<Cliente> clientes = List.of(); SE A LISTA TIVER VAZIA, VAI DAR ERRO NA HORA DE EXECUTAR,
+        //TEM QUE TER PELO MENOS UMA INSTÂNCIA
+        
+        List<Cliente> clientes = List.of(
+                entityManager.find(Cliente.class, 1),
+                entityManager.find(Cliente.class, 2));
+        
+        typedQuery = entityManager.createQuery(jpql, Pedido.class);
+        typedQuery.setParameter("clientes", clientes);
+        
+        resultado = typedQuery.getResultList();
+        assertFalse(resultado.isEmpty());
+        
+        resultado.forEach(p -> System.out.println("Pedido ID: " + p.getId() +
+                                                  ", Cliente ID: " + p.getCliente().getId()));
+        
+        
+        //NÃO PRECISA TER UMA INSTÂNCIA COM TODOS DADOS, COMO JPQL VAI COMPARAR COM ID,
+        //SÓ BASTA DEFINIR ID PARA INSTÂNCIA.
+        clientes = List.of(new Cliente(1), new Cliente(2));
+        
+        typedQuery = entityManager.createQuery(jpql, Pedido.class);
+        typedQuery.setParameter("clientes", clientes);
+        
+        resultado = typedQuery.getResultList();
+        assertFalse(resultado.isEmpty());
+        
+        resultado.forEach(p -> System.out.println("Pedido ID: " + p.getId() +
+                                                  ", Cliente ID: " + p.getCliente().getId()));
     }
 }

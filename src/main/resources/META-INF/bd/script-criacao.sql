@@ -1,5 +1,7 @@
 create table testando (id integer not null auto_increment, primary key (id)) engine=InnoDB;
 
+create function acima_media_faturamento(valor double) returns boolean reads sql data return valor > (select avg(total) from pedido);
+
 --create table categoria (id integer not null auto_increment, nome varchar(100) not null, categoria_pai_id integer, primary key (id)) engine=InnoDB;
 --create table cliente (id integer not null auto_increment, cpf varchar(14) not null, nome varchar(100) not null, primary key (id)) engine=InnoDB;
 --create table cliente_contato (cliente_id integer not null, descricao varchar(255), tipo varchar(255) not null, primary key (cliente_id, tipo)) engine=InnoDB;

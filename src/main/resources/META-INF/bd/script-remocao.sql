@@ -1,5 +1,7 @@
 drop table if exists testando;
 
+drop function if exists acima_media_faturamento;
+
 --alter table categoria drop foreign key fk_categoria_categoriapai;
 --alter table cliente_contato drop foreign key fk_cliente_contato_cliente;
 --alter table cliente_detalhe drop foreign key fk_cliente_detalhe_cliente;

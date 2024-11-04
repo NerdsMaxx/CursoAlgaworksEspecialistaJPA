@@ -158,4 +158,37 @@ public class BasicoJPQLTest extends EntityManagerTest {
         
         assertFalse(clientes.isEmpty());
     }
+    
+    @Test
+    public void usarDistinct() {
+//                A situação presenciada se deve a atualização do hibernate para versão 6, onde o distinct é feito automaticamente pelo hibernate, então mesmo que não deixe explícito no JPQL, será feito um distinct.
+//
+//                Segue na documentação:
+//
+//        "
+//        DISTINCT
+//        Starting with Hibernate ORM 6 it is no longer necessary to use distinct in JPQL and HQL to filter out the same parent entity references when join fetching a child collection. The returning duplicates of entities are now always filtered by Hibernate.
+//                "
+//        Disponível em: https://docs.jboss.org/hibernate/orm/6.0/migration-guide/migration-guide.html#:~:text=Starting%20with%20Hibernate%20ORM%206,now%20always%20filtered%20by%20Hibernate.
+//
+//        Mesmo que o hibernate faça o distinct automaticamente, é importante manter sua declaração explícita no jpql para que fique legível aos olhos de outros desenvolvedores!
+        
+//        String jpql = "select p from Pedido p " +
+//                      "join p.itemPedidos ip " +
+//                      "join ip.produto pro " +
+//                      "where pro.id in (1, 2, 3, 4)";
+        
+        String jpql = "select distinct p from Pedido p " +
+                      "join p.itemPedidos ip " +
+                      "join ip.produto pro " +
+                      "where pro.id in (1, 2, 3, 4)";
+        
+        TypedQuery<Pedido> typedQuery = entityManager.createQuery(jpql, Pedido.class);
+        
+        List<Pedido> resultado = typedQuery.getResultList();
+        
+        assertFalse(resultado.isEmpty());
+        
+        System.out.println(resultado.size());
+    }
 }

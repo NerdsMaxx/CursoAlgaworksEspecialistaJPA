@@ -12,11 +12,15 @@ import java.util.List;
 @Setter
 //@EqualsAndHashCode(of = {"id"})
 @Entity
+@NamedQueries({
+        @NamedQuery(name = "Produto.listar", query = "select p from Produto p"),
+        @NamedQuery(name = "Produto.listarPorCategoria", query = "select p from Produto p where exists (select 1 from Categoria c2 join c2.produtos p2 where p2 = p and c2.id = :categoria)")
+})
 @Table(name = "produto",
        uniqueConstraints = {@UniqueConstraint(name = "unq_produto_nome", columnNames = "nome")},
        indexes = {@Index(name = "idx_produto_nome", columnList = "nome")})
 public class Produto extends EntidadeBase {
-    
+
 
 //    @GeneratedValue(strategy = GenerationType.TABLE, generator = "tabela")
 //    @TableGenerator(name = "tabela",
@@ -39,19 +43,19 @@ public class Produto extends EntidadeBase {
     @Column(nullable = false, length = 100) // nome da coluna: "nome", tipo: varchar(255)
     private String nome;
     
-//    @Column(columnDefinition = "varchar(275) default 'descricao'")
+    //    @Column(columnDefinition = "varchar(275) default 'descricao'")
     @Lob //descricao tinytext
     @Column(length = Length.LONG32) // 2Gb - OBRIGANDO COLUNA TIPO DE DADOS COM MAIS BYTES, vai ser longtext agora.
     private String descricao;
-
-//    @Column(precision = 10, scale = 2) // nome da coluna: "preco", tipo: decimal(10, 2)
+    
+    //    @Column(precision = 10, scale = 2) // nome da coluna: "preco", tipo: decimal(10, 2)
     private BigDecimal preco;
     
     @Lob
     @Column(length = 1000)
     private byte[] foto;
     
-//    @ManyToMany(cascade = CascadeType.PERSIST)
+    //    @ManyToMany(cascade = CascadeType.PERSIST)
 //    @ManyToMany(cascade = CascadeType.MERGE)
     @ManyToMany
     @JoinTable(name = "produto_categoria",
@@ -60,7 +64,7 @@ public class Produto extends EntidadeBase {
                joinColumns = @JoinColumn(name = "produto_id", foreignKey = @ForeignKey(name = "fk_produto_produto_categoria")),
                inverseJoinColumns = @JoinColumn(name = "categoria_id", foreignKey = @ForeignKey(name = "fk_categoria_produto_categoria")))
     private List<Categoria> categorias;
-    
+
 //    @ToString.Exclude
 //    @OneToMany(mappedBy = "produto")
 //    private List<ItemPedido> itemPedidos;
