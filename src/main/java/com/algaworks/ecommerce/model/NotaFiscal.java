@@ -1,6 +1,9 @@
 package com.algaworks.ecommerce.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -25,10 +28,12 @@ public class NotaFiscal extends EntidadeBase {
 //    private Integer id;
     
 //    private String xml;
+    @NotEmpty
     @Lob
     @Column(length = 1000, nullable = false)
     private byte[] xml;
     
+    @PastOrPresent
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "data_emissao", columnDefinition = "datetime(6) not null")
     private Date dataEmissao;
@@ -36,8 +41,9 @@ public class NotaFiscal extends EntidadeBase {
 //    @Column(name = "pedido_id")
 //    private Integer pedidoId;
     
+    @NotNull
     @MapsId
-    @OneToOne(optional = false)
+    @OneToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "pedido_id", insertable = false, updatable = false, nullable = false,
                 foreignKey = @ForeignKey(name = "fk_nota_fiscal_pedido"))
 //    @JoinTable(name = "pedido_nota_fiscal",

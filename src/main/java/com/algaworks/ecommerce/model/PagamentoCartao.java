@@ -1,6 +1,7 @@
 package com.algaworks.ecommerce.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -18,7 +19,8 @@ public class PagamentoCartao extends Pagamento {
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    private Integer id;
     
-    @Column(name = "numero_cartao", length = 50, nullable = false)
+    @NotEmpty
+    @Column(name = "numero_cartao", length = 50)
     private String numeroCartao;
     
 //    @Enumerated(EnumType.STRING)

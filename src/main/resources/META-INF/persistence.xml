@@ -4,16 +4,72 @@
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_1.xsd"
              version="3.1">
     <persistence-unit name="Ecommerce-PU">
+<!--        <jta-data-source>projetoDS</jta-data-source>  obs.: não está ligado com JPA, parece q tem q a ver com servidor da aplicação, JNDI-->
+
         <mapping-file>META-INF/consulta/pedido.xml</mapping-file>
         <mapping-file>META-INF/consulta/produto.xml</mapping-file>
+        <mapping-file>META-INF/consulta/categoria.xml</mapping-file>
+
+<!--        Quem vai decidir como vai ser o modo é HIBERNATE, quando o valor está UNSPECIFIED.
+            Por padrão, ele não cacheia.                                                        -->
+<!--        <shared-cache-mode>UNSPECIFIED</shared-cache-mode> -->
+
+<!--        NÃO VAI TER CACHE NENHUMA. -->
+<!--        <shared-cache-mode>NONE</shared-cache-mode>-->
+
+<!--        Ele vai ter cache, porém para entidades que tiver marcado @Cacheable(false),
+            eles não vão ser cacheados.-->
+<!--        <shared-cache-mode>DISABLE_SELECTIVE</shared-cache-mode>-->
+
+<!--        Ele vai ter cache apenas para entidades que tiverem marcado @Cacheable(true),
+            o resto das entidades que não tiver marcado não vai ser cacheado.-->
+<!--        <shared-cache-mode>ENABLE_SELECTIVE</shared-cache-mode>-->
+
+<!--        Vai habilitar cache para todas entidades, mesmo que esteja com @Cacheable(false)-->
+        <shared-cache-mode>ALL</shared-cache-mode>
+
+        <validation-mode>CALLBACK</validation-mode>
 
         <properties>
             <property name="jakarta.persistence.jdbc.url"
                       value="jdbc:mysql://localhost:3306/algaworks_ecommerce?createDatabaseIfNotExist=true&amp;useTimezone=true&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true"/>
             <property name="jakarta.persistence.jdbc.user" value="root"/>
-            <property name="jakarta.persistence.jdbc.password" value="root"/>
+            <property name="jakarta.persistence.jdbc.password" value="password"/>
             <property name="jakarta.persistence.jdbc.driver" value="com.mysql.cj.jdbc.Driver"/>
 
+<!--            se usar multitenancy por maquina, vai multiplicar maximum pool size por quantidade de máquina-->
+            <property name="hibernate.hikari.maximumPoolSize" value="8" />
+            <property name="hibernate.connection.provider_class"
+                      value="org.hibernate.hikaricp.internal.HikariCPConnectionProvider" />
+
+            <property name="hibernate.cache.region.factory_class"
+                      value="jcache"/>
+            <property name="hibernate.jakarta.cache.provider"
+                      value="org.ehcache.jsr107.EhcacheCachingProvider"/>
+            <property name="hibernate.javax.cache.uri"
+                      value="META-INF/ehcache.xml"/>
+
+<!--            <property name="jakarta.persistence.sharedCache.mode" value="ALL"/>-->
+
+            <!-- se for SCHEMA, vai separar as mesmas tabelas por schema diferente-->
+            <!-- <property name="hibernate.multiTenancy" value="SCHEMA" />-->
+
+            <!-- se for por MÁQUINA -->
+            <!-- <property name="hibernate.multiTenancy" value="DATABASE" />-->
+
+            <!-- se for para fazer nada -->
+            <!-- <property name="hibernate.multiTenancy" value="NONE" />-->
+
+<!--            <property name="hibernate.tenant_identifier_resolver"-->
+<!--                      value="com.algaworks.ecommerce.hibernate.EcmCurrentTenantIdentifierResolver"/>-->
+
+<!--            se for SCHEMA-->
+<!--            <property name="hibernate.multi_tenant_connection_provider"-->
+<!--                      value="com.algaworks.ecommerce.hibernate.EcmSchemaMultiTenantConnectionProvider"/>-->
+
+            <!-- se for por MÁQUINA -->
+<!--            <property name="hibernate.multi_tenant_connection_provider"-->
+<!--                      value="com.algaworks.ecommerce.hibernate.EcmMachineMultiTenantConnectionProvider"/>-->
 
             <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
             <!--    outros possiveis valores: none (fazer nada), drop (vai só remover), create (vai só criar), drop-and-create (vai remover e criar depois) -->
@@ -47,7 +103,7 @@
             <property name="hibernate.dialect" value="org.hibernate.dialect.MySQLDialect"/>
 
             <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.format_sql" value="false"/>
         </properties>
     </persistence-unit>
 </persistence>

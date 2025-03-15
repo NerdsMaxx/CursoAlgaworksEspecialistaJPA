@@ -1,6 +1,9 @@
 package com.algaworks.ecommerce.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -20,9 +23,12 @@ public class PagamentoBoleto extends Pagamento {
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    private Integer id;
     
+    @NotBlank
     @Column(name = "codigo_barras", length = 100)
     private String codigoBarras;
     
+    @NotNull
+    @FutureOrPresent
     @Column(name = "data_vencimento")
     private LocalDate dataVencimento;
     

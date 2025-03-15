@@ -1,9 +1,6 @@
 package com.algaworks.ecommerce.model;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,4 +14,12 @@ public abstract class EntidadeBase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+    
+    //LOCK OTIMISTA
+    //DA PARA USAR LONG, LOCALDATETIME, DATE, CALENDAR
+    //MAS É RECOMENDÁVEL USAR COMO NÚMERO MESMO
+    //DÁ PARA USAR JUNTO LOCK PESSIMISTA DEPENDENDO DO CASO,
+    //MAS AS VEZES ATRAPALHA.
+    @Version
+    private Integer versao;
 }

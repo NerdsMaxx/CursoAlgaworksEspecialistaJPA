@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+        xmlns='http://www.ehcache.org/v3'
+        xmlns:jsr107='http://www.ehcache.org/v3/jsr107'
+        xsi:schemaLocation="
+			http://www.ehcache.org/v3 http://www.ehcache.org/schema/ehcache-core-3.0.xsd
+        	http://www.ehcache.org/v3/jsr107 http://www.ehcache.org/schema/ehcache-107-ext-3.0.xsd">
+
+    <service>
+        <jsr107:defaults default-template="padrao" />
+    </service>
+
+    <!-- SERVE PARA CRIAR UMA CONFIGURAÇÃO ESPECÍFICA PARA UMA DETERMINARDA ENTIDADE -->
+    <!-- ELE VAI HERDAR DA CONFIGURAÇÃO PADRÃO. -->
+    <cache alias="com.algaworks.ecommerce.model.Pedido" uses-template="padrao">
+        <expiry>
+            <!-- SERVE PARA ESPECIFICAR POR QUANTO TEMPO ELE PODE FICAR OCIOSO-->
+            <!-- SE ALGUÉM USAR ANTES DO TEMPO ACABAR, ELE RESETA O TEMPO -->
+            <!-- MAS SE NINGUEM USAR DEPOIS DO TEMPO ACABAR, ELE É APAGADO DO CACHE-->
+            <tti unit="seconds">2</tti>
+        </expiry>
+    </cache>
+
+    <!-- SERVE PARA CONFIGURAÇÃO PADRÃO PARA SEGUIR PARA TODAS ENTIDADES, -->
+    <!-- AO NÃO SER QUE TENHA UM CONFIGURAÇÃO ESPECÍFICA PARA UMA DETERMINADA ENTIDADE -->
+    <cache-template name="padrao">
+        <key-type>java.lang.Object</key-type>
+        <value-type>java.lang.Object</value-type>
+
+        <expiry>
+            <!-- SERVE PARA ESPECIFICAR POR QUANTO O OBJETO SE MANTERÁ NO CACHE -->
+            <!-- MESMO QUE ALGUÉM USE TODA HORA, DEPOIS QUE PASSAR O TEMPO, -->
+            <!-- ELE VAI SER APAGADO NA HORA. -->
+            <ttl unit="seconds">20</ttl>
+        </expiry>
+
+        <heap unit="entries">1000</heap>
+    </cache-template>
+</config>

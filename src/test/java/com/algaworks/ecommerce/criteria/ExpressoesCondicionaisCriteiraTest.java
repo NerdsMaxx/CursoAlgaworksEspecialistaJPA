@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static java.lang.System.out;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ExpressoesCondicionaisCriteiraTest extends EntityManagerTest {
@@ -90,7 +91,7 @@ public class ExpressoesCondicionaisCriteiraTest extends EntityManagerTest {
         assertFalse(resultado.isEmpty());
         assertEquals(1, resultado.size());
         
-        resultado.forEach(r -> System.out.println("id = " + r.getId() + ", nome = " + r.getNome()));
+        resultado.forEach(r -> out.println("id = " + r.getId() + ", nome = " + r.getNome()));
     }
     
     
@@ -113,7 +114,7 @@ public class ExpressoesCondicionaisCriteiraTest extends EntityManagerTest {
         assertFalse(resultado.isEmpty());
         assertEquals(4, resultado.size());
         
-        resultado.forEach(r -> System.out.println(
+        resultado.forEach(r -> out.println(
                 "id = " + r.getId() + ", nome = " + r.getNome() +
                 ", categorias = " + r.getCategorias().stream()
                                      .map(Categoria::getNome)
@@ -147,7 +148,8 @@ public class ExpressoesCondicionaisCriteiraTest extends EntityManagerTest {
         assertEquals(2, resultado.size()); //maior
 //        assertEquals(3, resultado.size()); //maior ou igual
         
-        resultado.forEach(r -> System.out.println("id = " + r.getId() + ", nome = " + r.getNome() + ", preco = " + r.getPreco()));
+        resultado.forEach(
+                r -> out.println("id = " + r.getId() + ", nome = " + r.getNome() + ", preco = " + r.getPreco()));
     }
     
     @Test
@@ -177,7 +179,8 @@ public class ExpressoesCondicionaisCriteiraTest extends EntityManagerTest {
         assertEquals(1, resultado.size()); //menor
 //        assertEquals(2, resultado.size()); //menor ou igual
         
-        resultado.forEach(r -> System.out.println("id = " + r.getId() + ", nome = " + r.getNome() + ", preco = " + r.getPreco()));
+        resultado.forEach(
+                r -> out.println("id = " + r.getId() + ", nome = " + r.getNome() + ", preco = " + r.getPreco()));
     }
     
     @Test
@@ -201,7 +204,8 @@ public class ExpressoesCondicionaisCriteiraTest extends EntityManagerTest {
         assertFalse(resultado.isEmpty());
         assertEquals(2, resultado.size());
         
-        resultado.forEach(r -> System.out.println("id = " + r.getId() + ", nome = " + r.getNome() + ", preco = " + r.getPreco()));
+        resultado.forEach(
+                r -> out.println("id = " + r.getId() + ", nome = " + r.getNome() + ", preco = " + r.getPreco()));
     }
     
     @Test
@@ -237,7 +241,7 @@ public class ExpressoesCondicionaisCriteiraTest extends EntityManagerTest {
         List<Pedido> resultado = typedQuery.getResultList();
         
         assertFalse(resultado.isEmpty());
-        resultado.forEach(r -> System.out.println("id = " + r.getId() + ", total = " + r.getTotal()));
+        resultado.forEach(r -> out.println("id = " + r.getId() + ", total = " + r.getTotal()));
     }
     
     @Test
@@ -255,6 +259,104 @@ public class ExpressoesCondicionaisCriteiraTest extends EntityManagerTest {
         List<Pedido> resultado = typedQuery.getResultList();
         
         assertFalse(resultado.isEmpty());
-        resultado.forEach(r -> System.out.println("id = " + r.getId() + ", total = " + r.getTotal()));
+        resultado.forEach(r -> out.println("id = " + r.getId() + ", total = " + r.getTotal()));
+    }
+    
+    @Test
+    public void usarExpressaoCase() {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Object[]> criteriaQuery = criteriaBuilder.createQuery(Object[].class);
+        Root<Pedido> root = criteriaQuery.from(Pedido.class);
+        
+        criteriaQuery.multiselect(
+                root.get(Pedido_.id), root.get(Pedido_.status),
+                criteriaBuilder.selectCase(root.get(Pedido_.status))
+                               .when(StatusPedido.PAGO, "Foi pago.")
+                               .otherwise(root.get(Pedido_.status))
+                               .as(String.class),
+                criteriaBuilder.selectCase(root.get(Pedido_.pagamento).type())
+                        .when(PagamentoBoleto.class, "Foi pago com boleto.")
+                        .when(PagamentoCartao.class, "Foi pago com cartão")
+                        .otherwise("Não identificado"));
+        
+        TypedQuery<Object[]> typedQuery = entityManager.createQuery(criteriaQuery);
+        
+        List<Object[]> resultado = typedQuery.getResultList();
+        assertFalse(resultado.isEmpty());
+        
+        resultado.forEach(r -> out.println("id = " + r[0] +
+                                           ", status = " + r[1] +
+                                           ", case status = " + r[2] +
+                                           ", case tipo pagamento = " + r[3]));
+    }
+    
+    @Test
+    public void usarExpressaoIN() {
+        List<Integer> ids = List.of(1, 3, 4, 6);
+        
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Pedido> criteriaQuery = criteriaBuilder.createQuery(Pedido.class);
+        Root<Pedido> root = criteriaQuery.from(Pedido.class);
+        
+        criteriaQuery.select(root);
+        
+        criteriaQuery.where(root.get(Pedido_.id).in(ids));
+        
+        TypedQuery<Pedido> typedQuery = entityManager.createQuery(criteriaQuery);
+        
+        List<Pedido> resultado = typedQuery.getResultList();
+        assertFalse(resultado.isEmpty());
+        
+        resultado.forEach(r -> out.println("id = " + r.getId()));
+    }
+    
+    @Test
+    public void usarExpressaoINComClientesEntidades() {
+        Cliente cliente1 = entityManager.find(Cliente.class, 1);
+        Cliente cliente2 = new Cliente();
+        cliente2.setId(2);
+        
+        List<Cliente> clientes = List.of(cliente1, cliente2);
+        
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Pedido> criteriaQuery = criteriaBuilder.createQuery(Pedido.class);
+        Root<Pedido> root = criteriaQuery.from(Pedido.class);
+        
+        criteriaQuery.select(root);
+        
+        criteriaQuery.where(root.get(Pedido_.cliente).in(clientes));
+        
+        TypedQuery<Pedido> typedQuery = entityManager.createQuery(criteriaQuery);
+        
+        List<Pedido> resultado = typedQuery.getResultList();
+        assertFalse(resultado.isEmpty());
+        
+        resultado.forEach(r -> out.println("id = " + r.getId()));
+    }
+    
+    @Test
+    public void usarExpressaoINComClientesIds() {
+        Cliente cliente1 = entityManager.find(Cliente.class, 1);
+        Cliente cliente2 = new Cliente();
+        cliente2.setId(2);
+        
+        List<Integer> clientesIds = List.of(cliente1.getId(), cliente2.getId());
+        
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Pedido> criteriaQuery = criteriaBuilder.createQuery(Pedido.class);
+        Root<Pedido> root = criteriaQuery.from(Pedido.class);
+        
+        criteriaQuery.select(root);
+        
+        criteriaQuery.where(root.get(Pedido_.cliente)
+                                .get(Cliente_.id)
+                                .in(clientesIds));
+        
+        TypedQuery<Pedido> typedQuery = entityManager.createQuery(criteriaQuery);
+        
+        List<Pedido> resultado = typedQuery.getResultList();
+        assertFalse(resultado.isEmpty());
+        
+        resultado.forEach(r -> out.println("id = " + r.getId()));
     }
 }

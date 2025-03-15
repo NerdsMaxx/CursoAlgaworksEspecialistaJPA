@@ -2,6 +2,10 @@ package com.algaworks.ecommerce.model;
 
 import com.algaworks.ecommerce.listener.GenericoListener;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
 import lombok.*;
 
 import java.time.LocalDate;
@@ -12,6 +16,16 @@ import java.util.Optional;
 @Getter
 @Setter
 @Entity
+//não é obrigatório colocar o nome de procedure para name, pode ser outro nome
+//mas outro parametro procedureName é obrigatório colocar o mesmo nome
+@NamedStoredProcedureQuery(
+        name = "compraram_acima_media",
+        procedureName = "compraram_acima_media",
+        resultClasses = Cliente.class,
+        parameters = {
+                @StoredProcedureParameter(
+                        name = "ano", type = Integer.class, mode = ParameterMode.IN)
+})
 @SecondaryTable(name = "cliente_detalhe",
                 pkJoinColumns = @PrimaryKeyJoinColumn(name = "cliente_id"),
                 foreignKey = @ForeignKey(name = "fk_cliente_detalhe_cliente"))
@@ -27,10 +41,13 @@ public class Cliente extends EntidadeBase {
 //    @GeneratedValue(strategy = GenerationType.IDENTITY)
 //    private Integer id;
     
+    @NotBlank
     @ToString.Include
     @Column(length = 100, nullable = false)
     private String nome;
     
+    @NotNull
+    @Pattern(regexp = "\\d{11}|(\\d{3}\\.\\d{3}\\.\\d{3}-\\d{2})")
     @ToString.Include
     @Column(length = 14, nullable = false)
     private String cpf;
@@ -49,11 +66,13 @@ public class Cliente extends EntidadeBase {
     @Transient
     private String primeiroNome;
     
+    @NotNull
     @ToString.Include
     @Column(table = "cliente_detalhe", length = 30, nullable = false)
     @Enumerated(EnumType.STRING)
     private SexoCliente sexo;
     
+    @Past
     @ToString.Include
     @Column(name = "data_nascimento", table = "cliente_detalhe")
     private LocalDate dataNascimento;

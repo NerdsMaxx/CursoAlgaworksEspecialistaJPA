@@ -12,6 +12,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.lang.System.out;
 import static java.util.Objects.requireNonNull;
 
 public class OperacoesEmLoteTest extends EntityManagerTest {
@@ -40,10 +41,10 @@ public class OperacoesEmLoteTest extends EntityManagerTest {
               p.setPreco(new BigDecimal(l[2]));
               p.setDataCriacao(LocalDateTime.now());
               
-              System.out.println("nome = " + p.getNome());
-              System.out.println("descricao = " + p.getDescricao());
-              System.out.println("preco = " + p.getPreco());
-              System.out.println("dataCriacao = " + p.getDataCriacao());
+              out.println("nome = " + p.getNome());
+              out.println("descricao = " + p.getDescricao());
+              out.println("preco = " + p.getPreco());
+              out.println("dataCriacao = " + p.getDataCriacao());
               
               entityManager.persist(p);
               
@@ -51,7 +52,7 @@ public class OperacoesEmLoteTest extends EntityManagerTest {
                   entityManager.flush();
                   entityManager.clear();
                   
-                  System.out.println("Contador " + (contador.get()/4) + " " + "-".repeat(15));
+                  out.println("Contador " + (contador.get()/4) + " " + "-".repeat(15));
               }
           });
         
